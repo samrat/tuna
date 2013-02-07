@@ -26,10 +26,16 @@
           (into [] result))))
 
 (defn song-by-id [id]
-  (sql/with-connection songs-db
-    (sql/with-query-results result
-      ["SELECT * from songs WHERE id = ?" id]
-      (into [] result))))
+  (first (sql/with-connection songs-db
+           (sql/with-query-results result
+             ["SELECT * from songs WHERE id = ?" id]
+             (into [] result)))))
+
+(defn songs-by-artist [artist]
+  (first (sql/with-connection songs-db
+           (sql/with-query-results result
+             ["SELECT * from songs WHERE artist = ?" artist]
+             (into [] result)))))
 
 (defn add-to-db [song]
   (sql/with-connection songs-db

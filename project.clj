@@ -6,6 +6,7 @@
                  [ring-server "0.2.7"]
                  [compojure "1.1.5"]
                  [hiccup "1.0.2"]
+                 [prismatic/dommy "0.0.1"]
                  [org.clojure/java.jdbc "0.2.3"]
                  [org.clojure/data.codec "0.1.0"]
                  [org.xerial/sqlite-jdbc "3.7.2"]

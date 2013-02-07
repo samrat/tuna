@@ -2,7 +2,7 @@
   (:use tuna.db))
 
 (defn song [id]
-  (let [s (first (song-by-id id))
+  (let [s (song-by-id id)
         path (:path s)]
     {:status 200
      :headers {"Content-Type" "audio/mpeg"
