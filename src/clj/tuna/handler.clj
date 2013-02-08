@@ -3,14 +3,17 @@
         tuna.song
         tuna.index)
   (:require [compojure.handler :as handler]
-            [compojure.route :as route]))
+            [compojure.route :as route]
+            [cemerick.shoreleave.rpc :as rpc]))
 
 (defroutes app-routes
   (GET "/" [] (song-list))
   (GET "/song/:id" [id] (song id))
-  (GET "/play/:id" [id] (play id))
+  ;(GET "/play/:id" [id] (play id))
   (route/resources "/")
   (route/not-found "Not Found"))
 
 (def app
-  (handler/site app-routes))
+  (-> #'app-routes
+      rpc/wrap-rpc
+      handler/site))
