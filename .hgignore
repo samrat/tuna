@@ -1,4 +1,5 @@
 syntax:glob
+src/clj/tuna/settings.clj
 target/
 lib/
 classes/

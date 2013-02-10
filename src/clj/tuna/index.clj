@@ -11,7 +11,9 @@
           "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"">]
          [:body
           [:h1 "Tuna"]
-          [:i {:id "play-pause" :class "icon-play"}]
+          [:h3 [:i {:id "play-pause" :class "icon-play"}]]
+          ;; [:div {:class "progress progress-info progress-striped"}
+          ;;  [:div {:class "bar" :style "width: 0%"}]]
           (html
            "<audio id='player' preload='auto'></audio>"
            [:div [:span {:class "title"}]]

@@ -25,4 +25,5 @@
      :path song-path}))
 
 (defn add-songs [source]
-  (map add-to-db (map song-info (mp3-files source))))
+  (do (init-db)
+      (map add-to-db (map song-info (mp3-files source)))))

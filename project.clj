@@ -9,11 +9,11 @@
                  [enfocus "1.0.0-beta3"]
                  [com.cemerick/shoreleave-remote-ring "0.0.2"]
                  [shoreleave/shoreleave-remote "0.2.2"]
-                 [org.clojure/google-closure-library-third-party "0.0-2029"]
                  [org.clojure/java.jdbc "0.2.3"]
                  [org.clojure/data.codec "0.1.0"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
-                 [clj-tika "1.2.0"]]
+                 [clj-tika "1.2.0"]
+                 [de.u-mass/lastfm-java "0.1.2"]]
   :plugins [[lein-ring "0.8.2"]
             [lein-cljsbuild "0.3.0"]]
   :ring {:handler tuna.handler/app}

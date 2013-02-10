@@ -44,11 +44,14 @@
 (em/defaction show-pause-icon []
   ["#play-pause"] (em/set-attr :class "icon-pause"))
 
+(em/defaction show-play-icon []
+  ["#play-pause"] (em/set-attr :class "icon-play"))
+
 (defn toggle-play-pause []
   (if (= (em/from (em/select ["#play-pause"]) (em/get-attr :class)) "icon-play")
-    (do (em/at js/document ["#play-pause"] (em/set-attr :class "icon-pause"))
+    (do (show-pause-icon)
         (.play (.getElementById js/document "player"))) 
-    (do (em/at js/document ["#play-pause"] (em/set-attr :class "icon-play"))
+    (do (show-play-icon)
         (.pause (.getElementById js/document "player")))))
 
 (em/defaction setup-listeners []
