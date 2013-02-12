@@ -13,7 +13,9 @@
                  [org.clojure/data.codec "0.1.0"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
                  [clj-tika "1.2.0"]
-                 [de.u-mass/lastfm-java "0.1.2"]]
+                 [de.u-mass/lastfm-java "0.1.2"]
+                 [org/jaudiotagger "2.0.3"]
+                 [crypto-random "1.1.0"]]
   :plugins [[lein-ring "0.8.2"]
             [lein-cljsbuild "0.3.0"]]
   :ring {:handler tuna.handler/app}

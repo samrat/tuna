@@ -14,8 +14,11 @@
        :songs
        [:title "varchar(300)"]
        [:artist "varchar(300)"]
+       [:album "varchar(300)"]
        [:id "varchar(200)"]
-       [:path "varchar(1000)"]))
+       [:path "varchar(1000)"]
+       [:mimetype "varchar(100)"]
+       [:length "varchar(100)"]))
     (catch Exception ex
       (.getMessage (.getNextException ex)))))
 

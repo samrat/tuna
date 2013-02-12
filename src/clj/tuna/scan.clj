@@ -2,28 +2,37 @@
   (:use [clojure.java.io :as io]
         tika
         tuna.db)
-  (:require [clojure.data.codec.base64 :as b64]))
+  (:require [crypto.random :as crypto])
+  (:import [org.jaudiotagger.audio AudioFileIO]
+           [org.jaudiotagger.tag FieldKey Tag TagField TagTextField]
+           [org.jaudiotagger.tag.mp4 Mp4Tag Mp4FieldKey]))
 
 (defn- regex-file-seq
   "Lazily filter a directory based on regex."
   [regex in-dir]
   (filter #(re-find regex (.getPath %)) (file-seq (io/file in-dir))))
 
-(defn mp3-files [source]
+(defn audio-files [source]
   "Return a seq of mp3 files from the source directory."
-  (regex-file-seq #".*\.mp3$" source))
+  (regex-file-seq #".*\.(mp3|flac|m4a)$" source))
 
-(defn song-info [song-path]
-  (let [metadata (try (parse song-path)
-                      (catch Exception e {:title "Untitled track"
-                                          :xmpdm:artist "Unknown Artist"
-                                          :path song-path}))]
-    {:title (first (:title metadata))
-     :artist (first (:xmpdm:artist metadata))
-     :id (String. (b64/encode (.getBytes (str (first (:title metadata))
-                                              (first (:xmpdm:artist metadata))))))
-     :path song-path}))
+(defn- song-info [song-path]
+  (let [audio (AudioFileIO/read song-path)
+        tag (.getTag audio)
+        header (.getAudioHeader audio)
+        title (.getFirst tag FieldKey/TITLE)
+        artist (.getFirst tag FieldKey/ARTIST)
+        album (.getFirst tag FieldKey/ALBUM)
+        mime (detect-mime-type song-path)]
+    {:title title
+     :artist artist
+     :album album
+     :length (.getTrackLength header)
+     :id (crypto/url-part 8)
+     :path song-path
+     :mimetype mime
+     }))
 
 (defn add-songs [source]
   (do (init-db)
-      (map add-to-db (map song-info (mp3-files source)))))
+      (map add-to-db (map song-info (audio-files source)))))

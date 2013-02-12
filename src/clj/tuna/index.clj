@@ -4,18 +4,20 @@
         tuna.db))
 
 (defn song-list []
-  (html5 [:head
-          (include-css "/bootstrap/css/bootstrap.css")
-          (include-css "/css/font-awesome.min.css")
-          (include-js "/js/main.js")
-          "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"">]
-         [:body
-          [:h1 "Tuna"]
-          [:h3 [:i {:id "play-pause" :class "icon-play"}]]
-          ;; [:div {:class "progress progress-info progress-striped"}
-          ;;  [:div {:class "bar" :style "width: 0%"}]]
-          (html
-           "<audio id='player' preload='auto'></audio>"
-           [:div [:span {:class "title"}]]
-           ;[:div {:id "search"} [:input {:type "text" :id "query"}]]
-           )]))
+  (html5 (html [:head
+                (include-css "/bootstrap/css/bootstrap.css")
+                (include-css "/css/font-awesome.min.css")
+                (include-js "/js/main.js")
+                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+                "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">"]
+               [:body
+                [:div {:class "navbar navbar-fixed-bottom"}
+                 [:div {:class "navbar-inner"}
+                  [:i {:id "prev-song" :class "icon-step-backward" :style "font-size:2em;padding:5px;"}]
+                  [:i {:id "play-pause" :class "icon-play" :style "font-size:2em;padding:5px;"}]
+                  [:i {:id "next-song" :class "icon-step-forward" :style "font-size:2em;padding:5px;"}]
+                  [:div [:span {:class "title"}]
+                   [:span {:id "current"} "00:00"] ;[:span {:class
+                                        ;"length"}]
+                   ]]]] 
+                "<audio id='player' preload='auto' ontimeupdate=\"document.getElementById('current').innerHTML = tuna.main.secs__GT_mins(this.currentTime) + ' / ' + tuna.main.secs__GT_mins(this.duration);\"></audio>")))
