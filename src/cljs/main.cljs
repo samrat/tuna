@@ -14,22 +14,30 @@
    :songs []
    #(f %)))
 
+(defn render-song-list [songs]
+  (template/node [:div {:id "song-list"}
+                  [:table {:class "table table-hover table-condensed"}
+                   [:thead
+                    [:th "Title"]
+                    [:th "Album"]
+                    [:th "Artist"]]
+                   [:tbody {:class "selectable"}
+                    (for [song (sort-by :artist songs)]
+                      [:tr {:onclick
+                            (str "javascript:tuna.main.play_audio('"
+                                 (:id song) "');")}
+                       [:td (:title song)]
+                       [:td (:album song)]
+                       [:td (:artist song)]])]]]))
+
+(defn search [query]
+  (rpc/remote-callback
+   :search [query]
+   (fn [songs]
+     (em/at js/document ["#song-list"] (em/substitute (render-song-list songs))))))
+
 (defn add-song-list []
-  (song-list-hof (fn [songs] (add-to-body (template/node
-                                     [:div {:id "song-list"}
-                                      [:table {:class "table table-hover table-condensed"}
-                                       [:thead
-                                        [:th "Title"]
-                                        [:th "Album"]
-                                        [:th "Artist"]]
-                                       [:tbody {:class "selectable"}
-                                        (for [song (sort-by :artist songs)]
-                                          [:tr {:onclick
-                                                 (str "javascript:tuna.main.play_audio('"
-                                                      (:id song) "');")}
-                                           [:td (:title song)]
-                                           [:td (:album song)]
-                                           [:td (:artist song)]])]]])))))
+  (song-list-hof (fn [songs] (add-to-body (render-song-list songs)))))
 
 (em/defaction show-song-title [title]
   [".title"] (em/content title))
@@ -72,14 +80,14 @@
       (.play (.getElementById js/document "player"))
       (show-pause-icon)))
 
-(defn song-id-list []
-  (song-list-hof (fn [songs]
-                   (map :id songs))))
-
 (em/defaction setup-listeners []
   ["#play-pause"] (em/listen
                    :click
-                   toggle-play-pause))
+                   toggle-play-pause)
+  [".search-query"] (em/listen
+                     :keyup
+                     #(search (.-value (.getElementById js/document
+                                                        "query")))))
 
 (em/defaction start []
   (setup-listeners)

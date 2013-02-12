@@ -14,10 +14,14 @@
 (rpc/defremote songs []
   (all-songs))
 
+(rpc/defremote search [query]
+  (search-song query))
+
 (defroutes app-routes
   (GET "/" [] (song-list))
   (GET "/song/:id" [id] (song id))
   (GET "/scan" [] (add-songs "/vault/Music"))
+  (GET "/search/:q" [q] (search-song q))
   ;(GET "/play/:id" [id] (play id))
   (route/resources "/")
   (route/not-found "Not Found"))

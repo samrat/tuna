@@ -36513,27 +36513,35 @@ tuna.main.song_list_hof = function song_list_hof(f) {
     return f.call(null, p1__3386_SHARP_)
   })
 };
+tuna.main.render_song_list = function render_song_list(songs) {
+  return dommy.template.node.call(null, cljs.core.PersistentVector.fromArray(["\ufdd0'div", cljs.core.ObjMap.fromObject(["\ufdd0'id"], {"\ufdd0'id":"song-list"}), cljs.core.PersistentVector.fromArray(["\ufdd0'table", cljs.core.ObjMap.fromObject(["\ufdd0'class"], {"\ufdd0'class":"table table-hover table-condensed"}), cljs.core.PersistentVector.fromArray(["\ufdd0'thead", cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Title"], true), cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Album"], 
+  true), cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Artist"], true)], true), cljs.core.PersistentVector.fromArray(["\ufdd0'tbody", cljs.core.ObjMap.fromObject(["\ufdd0'class"], {"\ufdd0'class":"selectable"}), function() {
+    var iter__2540__auto__ = function iter__3389(s__3390) {
+      return new cljs.core.LazySeq(null, false, function() {
+        var s__3390__$1 = s__3390;
+        while(true) {
+          if(cljs.core.seq.call(null, s__3390__$1)) {
+            var song = cljs.core.first.call(null, s__3390__$1);
+            return cljs.core.cons.call(null, cljs.core.PersistentVector.fromArray(["\ufdd0'tr", cljs.core.ObjMap.fromObject(["\ufdd0'onclick"], {"\ufdd0'onclick":[cljs.core.str("javascript:tuna.main.play_audio('"), cljs.core.str((new cljs.core.Keyword("\ufdd0'id")).call(null, song)), cljs.core.str("');")].join("")}), cljs.core.PersistentVector.fromArray(["\ufdd0'td", (new cljs.core.Keyword("\ufdd0'title")).call(null, song)], true), cljs.core.PersistentVector.fromArray(["\ufdd0'td", (new cljs.core.Keyword("\ufdd0'album")).call(null, 
+            song)], true), cljs.core.PersistentVector.fromArray(["\ufdd0'td", (new cljs.core.Keyword("\ufdd0'artist")).call(null, song)], true)], true), iter__3389.call(null, cljs.core.rest.call(null, s__3390__$1)))
+          }else {
+            return null
+          }
+          break
+        }
+      }, null)
+    };
+    return iter__2540__auto__.call(null, cljs.core.sort_by.call(null, "\ufdd0'artist", songs))
+  }()], true)], true)], true))
+};
+tuna.main.search = function search(query) {
+  return shoreleave.remotes.http_rpc.remote_callback.call(null, "\ufdd0'search", cljs.core.PersistentVector.fromArray([query], true), function(songs) {
+    return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#song-list"], true), enfocus.core.en_substitute.call(null, tuna.main.render_song_list.call(null, songs)))
+  })
+};
 tuna.main.add_song_list = function add_song_list() {
   return tuna.main.song_list_hof.call(null, function(songs) {
-    return tuna.main.add_to_body.call(null, dommy.template.node.call(null, cljs.core.PersistentVector.fromArray(["\ufdd0'div", cljs.core.ObjMap.fromObject(["\ufdd0'id"], {"\ufdd0'id":"song-list"}), cljs.core.PersistentVector.fromArray(["\ufdd0'table", cljs.core.ObjMap.fromObject(["\ufdd0'class"], {"\ufdd0'class":"table table-hover table-condensed"}), cljs.core.PersistentVector.fromArray(["\ufdd0'thead", cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Title"], true), cljs.core.PersistentVector.fromArray(["\ufdd0'th", 
-    "Album"], true), cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Artist"], true)], true), cljs.core.PersistentVector.fromArray(["\ufdd0'tbody", cljs.core.ObjMap.fromObject(["\ufdd0'class"], {"\ufdd0'class":"selectable"}), function() {
-      var iter__2540__auto__ = function iter__3389(s__3390) {
-        return new cljs.core.LazySeq(null, false, function() {
-          var s__3390__$1 = s__3390;
-          while(true) {
-            if(cljs.core.seq.call(null, s__3390__$1)) {
-              var song = cljs.core.first.call(null, s__3390__$1);
-              return cljs.core.cons.call(null, cljs.core.PersistentVector.fromArray(["\ufdd0'tr", cljs.core.ObjMap.fromObject(["\ufdd0'onclick"], {"\ufdd0'onclick":[cljs.core.str("javascript:tuna.main.play_audio('"), cljs.core.str((new cljs.core.Keyword("\ufdd0'id")).call(null, song)), cljs.core.str("');")].join("")}), cljs.core.PersistentVector.fromArray(["\ufdd0'td", (new cljs.core.Keyword("\ufdd0'title")).call(null, song)], true), cljs.core.PersistentVector.fromArray(["\ufdd0'td", (new cljs.core.Keyword("\ufdd0'album")).call(null, 
-              song)], true), cljs.core.PersistentVector.fromArray(["\ufdd0'td", (new cljs.core.Keyword("\ufdd0'artist")).call(null, song)], true)], true), iter__3389.call(null, cljs.core.rest.call(null, s__3390__$1)))
-            }else {
-              return null
-            }
-            break
-          }
-        }, null)
-      };
-      return iter__2540__auto__.call(null, cljs.core.sort_by.call(null, "\ufdd0'artist", songs))
-    }()], true)], true)], true)))
+    return tuna.main.add_to_body.call(null, tuna.main.render_song_list.call(null, songs))
   })
 };
 tuna.main.show_song_title = function show_song_title(title) {
@@ -36567,13 +36575,10 @@ tuna.main.play_audio = function play_audio(id) {
   document.getElementById("player").play();
   return tuna.controls.show_pause_icon.call(null)
 };
-tuna.main.song_id_list = function song_id_list() {
-  return tuna.main.song_list_hof.call(null, function(songs) {
-    return cljs.core.map.call(null, "\ufdd0'id", songs)
-  })
-};
 tuna.main.setup_listeners = function setup_listeners() {
-  return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#play-pause"], true), enfocus.core.en_listen.call(null, "\ufdd0'click", tuna.controls.toggle_play_pause))
+  return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#play-pause"], true), enfocus.core.en_listen.call(null, "\ufdd0'click", tuna.controls.toggle_play_pause), cljs.core.PersistentVector.fromArray([".search-query"], true), enfocus.core.en_listen.call(null, "\ufdd0'keyup", function() {
+    return tuna.main.search.call(null, document.getElementById("query").value)
+  }))
 };
 tuna.main.start = function start() {
   return enfocus.core.at.call(null, document, tuna.main.setup_listeners.call(null), tuna.main.add_song_list.call(null))
