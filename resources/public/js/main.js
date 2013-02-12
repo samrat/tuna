@@ -36558,8 +36558,8 @@ tuna.main.show_song_info = function show_song_info(id) {
 tuna.main.set_audio_src = function set_audio_src(id) {
   return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#player"], true), enfocus.core.en_do__GT_.call(null, enfocus.core.en_set_attr.call(null, "\ufdd0'src", [cljs.core.str("/song/"), cljs.core.str(id)].join("")), enfocus.core.en_set_attr.call(null, "\ufdd0'songid", id)))
 };
-tuna.main.current_time = function current_time() {
-  return document.getElementById("player").currentTime
+tuna.main.show_current_time = function show_current_time(current, duration) {
+  return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#current"], true), enfocus.core.en_content.call(null, [cljs.core.str(tuna.main.secs__GT_mins.call(null, current)), cljs.core.str(" / "), cljs.core.str(tuna.main.secs__GT_mins.call(null, duration))].join("")), cljs.core.PersistentVector.fromArray([".bar"], true), enfocus.core.en_set_attr.call(null, "\ufdd0'style", [cljs.core.str("width:"), cljs.core.str(current / duration * 100), cljs.core.str("%;")].join("")))
 };
 tuna.main.play_audio = function play_audio(id) {
   tuna.main.set_audio_src.call(null, id);

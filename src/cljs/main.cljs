@@ -58,8 +58,13 @@
   (em/do-> (em/set-attr :src (str "/song/" id))
            (em/set-attr :songid id)))
 
-(defn current-time []
-  (.-currentTime (.getElementById js/document "player")))
+(em/defaction show-current-time [current duration]
+  ["#current"] (em/content (str (secs->mins current)
+                                " / "
+                                (secs->mins duration)))
+  [".bar"] (em/set-attr :style (str "width:"
+                                    (* (/ current duration) 100)
+                                    "%;")))
 
 (defn play-audio [id]
   (do (set-audio-src id)

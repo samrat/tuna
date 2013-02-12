@@ -17,7 +17,11 @@
                   [:i {:id "play-pause" :class "icon-play" :style "font-size:2em;padding:5px;"}]
                   [:i {:id "next-song" :class "icon-step-forward" :style "font-size:2em;padding:5px;"}]
                   [:div [:span {:class "title"}]
-                   [:span {:id "current"} "00:00"] ;[:span {:class
-                                        ;"length"}]
-                   ]]]] 
-                "<audio id='player' preload='auto' ontimeupdate=\"document.getElementById('current').innerHTML = tuna.main.secs__GT_mins(this.currentTime) + ' / ' + tuna.main.secs__GT_mins(this.duration);\"></audio>")))
+                   [:span {:id "current"} "00:00 / 00:00"]
+                   ]
+                  [:div {:class "progress"}
+                   [:div {:class "bar"}]]]] 
+                [:audio {:id "player"
+                         :preload "auto"
+                         :ontimeupdate "tuna.main.show_current_time(this.currentTime,this.duration);"}]]
+                )))
