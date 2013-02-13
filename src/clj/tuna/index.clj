@@ -17,14 +17,15 @@
                             :id "query"
                             :class "navbar-search pull-right search-query"
                             :placeholder "Search"}]
-                  [:i {:id "prev-song" :class "icon-step-backward" :style "font-size:2em;padding:5px;"}]
-                  [:i {:id "play-pause" :class "icon-play" :style "font-size:2em;padding:5px;"}]
-                  [:i {:id "next-song" :class "icon-step-forward" :style "font-size:2em;padding:5px;"}]
-                  [:div [:span {:class "title"}]
-                   [:span {:id "current"} "00:00 / 00:00"]
-                   ]
-                  [:div {:class "progress progress-striped"}
-                   [:div {:class "bar"}]]]] 
+                  [:div
+                   [:i {:id "prev-song" :class "icon-step-backward" :style "font-size:2em;padding:5px;"}]
+                   [:i {:id "play-pause" :class "icon-play" :style "font-size:2em;padding:5px;"}]
+                   [:i {:id "next-song" :class "icon-step-forward" :style "font-size:2em;padding:5px;"}]]
+                  [:div {:class "title"} "&nbsp;"]
+                  [:div [:div {:class "progress progress-striped"}
+                         [:div {:class "bar"}]
+                         [:div {:id "current" :style "text-align:right;"} "00:00 / 00:00"]]
+                   ]]] 
                 [:audio {:id "player"
                          :preload "auto"
                          :ontimeupdate "tuna.main.show_current_time(this.currentTime,this.duration);"}]]

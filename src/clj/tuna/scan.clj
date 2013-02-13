@@ -14,7 +14,7 @@
 
 (defn audio-files [source]
   "Return a seq of mp3 files from the source directory."
-  (regex-file-seq #".*\.(mp3|flac|m4a)$" source))
+  (remove (existing-paths) (regex-file-seq #".*\.(mp3|flac|m4a)$" source)))
 
 (defn- song-info [song-path]
   (let [audio (AudioFileIO/read song-path)
@@ -30,9 +30,8 @@
      :length (.getTrackLength header)
      :id (crypto/url-part 8)
      :path song-path
-     :mimetype mime
-     }))
+     :mimetype mime}))
 
 (defn add-songs [source]
-  (do (init-db)
+  (do ;(init-db)
       (map add-to-db (map song-info (audio-files source)))))

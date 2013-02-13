@@ -5,8 +5,9 @@
 (def songs-db
   {:classname   "org.sqlite.JDBC"
    :subprotocol "sqlite"
-   :subname     "/tmp/songs.db"
-   })
+   :subname     "/tmp/songs.db"})
+
+(def clucy-index (clucy/disk-index "/tmp/tuna"))
 
 (defn init-db []
   (try
@@ -27,21 +28,22 @@
   (sql/with-connection songs-db
         (sql/with-query-results result
           ["SELECT * from songs"]
-          (into [] result))))
+          (vec result))))
 
 (defn song-by-id [id]
   (first (sql/with-connection songs-db
            (sql/with-query-results result
              ["SELECT * from songs WHERE id = ?" id]
-             (into [] result)))))
+             (vec result)))))
 
 (defn songs-by-artist [artist]
   (first (sql/with-connection songs-db
            (sql/with-query-results result
              ["SELECT * from songs WHERE artist = ?" artist]
-             (into [] result)))))
+             (vec result)))))
 
-(def clucy-index (clucy/disk-index "/tmp/tuna"))
+(defn existing-paths []
+  (into #{} (map clojure.java.io/file (map :path (all-songs)))))
 
 (defn add-to-db [song]
   (do (sql/with-connection songs-db
@@ -50,5 +52,5 @@
 
 (defn search-song [query]
   (if-not (= query "")
-    (clucy/search clucy-index query 10)
+    (clucy/search clucy-index (str query "~") 30)
     (all-songs)))
