@@ -1,6 +1,6 @@
 (defproject tuna "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Serves your music directory so you can play it on your browser."
+  :url "https://bitbucket.org/samrat/tuna"
   :source-paths ["src/clj"]
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [compojure "1.1.5"]
@@ -15,14 +15,17 @@
                  [de.u-mass/lastfm-java "0.1.2"]
                  [org/jaudiotagger "2.0.3"]
                  [clucy "0.3.0"]
-                 [crypto-random "1.1.0"]]
+                 [digest "1.4.2"]
+                 [clj-http "0.6.4"]
+                 [cheshire "5.0.1"]
+                 [crypto-random "1.1.0"]
+                 [ring/ring-codec "1.0.0"]]
   :plugins [[lein-ring "0.8.2"]
             [lein-cljsbuild "0.3.0"]]
   :ring {:handler tuna.handler/app}
 
   :cljsbuild {
-              :builds [{
-                        :incremental false
+              :builds [{:incremental false
                         :source-paths ["src/cljs"]
                         :compiler {
                                    :output-to "resources/public/js/main.js"
