@@ -8,6 +8,7 @@
                 (include-css "/bootstrap/css/bootstrap.css")
                 (include-css "/css/font-awesome.min.css")
                 (include-js "/js/main.js")
+                (include-js "/js/mousetrap.min.js")
                 "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0\">"
                 "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">"]
                [:body

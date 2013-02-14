@@ -98,8 +98,13 @@
                      #(search (.-value (.getElementById js/document
                                                         "query")))))
 
+(em/defaction focus-search []
+  ["#query"] (em/focus))
+
 (em/defaction start []
   (setup-listeners)
-  (add-song-list))
+  (add-song-list)
+  (.bind js/Mousetrap "/" focus-search "keyup")
+  (.bind js/Mousetrap "p" toggle-play-pause "keydown"))
 
 (set! (.-onload js/window) start)

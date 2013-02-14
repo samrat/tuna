@@ -27,7 +27,7 @@
   :cljsbuild {
               :builds [{:incremental false
                         :source-paths ["src/cljs"]
-                        :compiler {
+                        :compiler {:externs ["mousetrap.min.js"]
                                    :output-to "resources/public/js/main.js"
                                    :optimizations :whitespace
                                    :pretty-print true}}]}

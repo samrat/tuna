@@ -1,6 +1,6 @@
 # tuna
 
-Tuna serves your music files, so you can play it on your web browser. (It is inspired by [zmusic-ng.](http://git.zx2c4.com/zmusic-ng/about/)
+Tuna serves your music files, so you can play it on your web browser. (It is inspired by [zmusic-ng.](http://git.zx2c4.com/zmusic-ng/about/))
 
 ## Prerequisites
 

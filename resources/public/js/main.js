@@ -32007,15 +32007,6 @@ tuna.controls.show_pause_icon = function show_pause_icon() {
 tuna.controls.show_play_icon = function show_play_icon() {
   return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#play-pause"], true), enfocus.core.en_set_attr.call(null, "\ufdd0'class", "icon-play"))
 };
-tuna.controls.toggle_play_pause = function toggle_play_pause() {
-  if(cljs.core._EQ_.call(null, enfocus.core.from.call(null, enfocus.core.css_select.call(null, cljs.core.PersistentVector.fromArray(["#play-pause"], true)), enfocus.core.en_get_attr.call(null, "\ufdd0'class")), "icon-play")) {
-    tuna.controls.show_pause_icon.call(null);
-    return document.getElementById("player").play()
-  }else {
-    tuna.controls.show_play_icon.call(null);
-    return document.getElementById("player").pause()
-  }
-};
 goog.provide("dommy.template");
 goog.require("cljs.core");
 goog.require("clojure.string");
@@ -36514,8 +36505,8 @@ tuna.main.song_list_hof = function song_list_hof(f) {
   })
 };
 tuna.main.render_song_list = function render_song_list(songs) {
-  return dommy.template.node.call(null, cljs.core.PersistentVector.fromArray(["\ufdd0'div", cljs.core.ObjMap.fromObject(["\ufdd0'id"], {"\ufdd0'id":"song-list"}), cljs.core.PersistentVector.fromArray(["\ufdd0'table", cljs.core.ObjMap.fromObject(["\ufdd0'class"], {"\ufdd0'class":"table table-hover table-condensed"}), cljs.core.PersistentVector.fromArray(["\ufdd0'thead", cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Title"], true), cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Album"], 
-  true), cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Artist"], true)], true), cljs.core.PersistentVector.fromArray(["\ufdd0'tbody", cljs.core.ObjMap.fromObject(["\ufdd0'class"], {"\ufdd0'class":"selectable"}), function() {
+  return dommy.template.node.call(null, cljs.core.PersistentVector.fromArray(["\ufdd0'div", cljs.core.ObjMap.fromObject(["\ufdd0'id"], {"\ufdd0'id":"song-list"}), cljs.core.PersistentVector.fromArray(["\ufdd0'table", cljs.core.ObjMap.fromObject(["\ufdd0'class"], {"\ufdd0'class":"table table-hover"}), cljs.core.PersistentVector.fromArray(["\ufdd0'thead", cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Title"], true), cljs.core.PersistentVector.fromArray(["\ufdd0'th", "Album"], true), cljs.core.PersistentVector.fromArray(["\ufdd0'th", 
+  "Artist"], true)], true), cljs.core.PersistentVector.fromArray(["\ufdd0'tbody", cljs.core.ObjMap.fromObject(["\ufdd0'class"], {"\ufdd0'class":"selectable"}), function() {
     var iter__2540__auto__ = function iter__3389(s__3390) {
       return new cljs.core.LazySeq(null, false, function() {
         var s__3390__$1 = s__3390;
@@ -36531,7 +36522,7 @@ tuna.main.render_song_list = function render_song_list(songs) {
         }
       }, null)
     };
-    return iter__2540__auto__.call(null, cljs.core.sort_by.call(null, "\ufdd0'artist", songs))
+    return iter__2540__auto__.call(null, songs)
   }()], true)], true)], true))
 };
 tuna.main.search = function search(query) {
@@ -36541,7 +36532,7 @@ tuna.main.search = function search(query) {
 };
 tuna.main.add_song_list = function add_song_list() {
   return tuna.main.song_list_hof.call(null, function(songs) {
-    return tuna.main.add_to_body.call(null, tuna.main.render_song_list.call(null, songs))
+    return tuna.main.add_to_body.call(null, tuna.main.render_song_list.call(null, cljs.core.sort_by.call(null, "\ufdd0'artist", songs)))
   })
 };
 tuna.main.show_song_title = function show_song_title(title) {
@@ -36552,11 +36543,8 @@ tuna.main.secs__GT_mins = function secs__GT_mins(secs) {
   var seconds = Math.floor.call(null, secs - minutes * 60).toString();
   return[cljs.core.str(minutes), cljs.core.str(":"), cljs.core.str(cljs.core._EQ_.call(null, 1, seconds.length) ? [cljs.core.str("0"), cljs.core.str(seconds)].join("") : seconds)].join("")
 };
-tuna.main.show_song_length = function show_song_length(length) {
-  return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray([".length"], true), enfocus.core.en_content.call(null, tuna.main.secs__GT_mins.call(null, length)))
-};
 tuna.main.render_song_info = function render_song_info(info) {
-  return enfocus.core.at.call(null, document, enfocus.core.en_do__GT_.call(null, tuna.main.show_song_title.call(null, (new cljs.core.Keyword("\ufdd0'title")).call(null, info)), tuna.main.show_song_length.call(null, (new cljs.core.Keyword("\ufdd0'length")).call(null, info))))
+  return enfocus.core.at.call(null, document, tuna.main.show_song_title.call(null, (new cljs.core.Keyword("\ufdd0'title")).call(null, info)))
 };
 tuna.main.show_song_info = function show_song_info(id) {
   return shoreleave.remotes.http_rpc.remote_callback.call(null, "\ufdd0'song-info", cljs.core.PersistentVector.fromArray([id], true), function(p1__3391_SHARP_) {
@@ -36567,7 +36555,20 @@ tuna.main.set_audio_src = function set_audio_src(id) {
   return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#player"], true), enfocus.core.en_do__GT_.call(null, enfocus.core.en_set_attr.call(null, "\ufdd0'src", [cljs.core.str("/song/"), cljs.core.str(id)].join("")), enfocus.core.en_set_attr.call(null, "\ufdd0'songid", id)))
 };
 tuna.main.show_current_time = function show_current_time(current, duration) {
-  return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#current"], true), enfocus.core.en_content.call(null, [cljs.core.str(tuna.main.secs__GT_mins.call(null, current)), cljs.core.str(" / "), cljs.core.str(tuna.main.secs__GT_mins.call(null, duration))].join("")), cljs.core.PersistentVector.fromArray([".bar"], true), enfocus.core.en_set_attr.call(null, "\ufdd0'style", [cljs.core.str("width:"), cljs.core.str(current / duration * 100), cljs.core.str("%;")].join("")))
+  enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#current"], true), enfocus.core.en_content.call(null, [cljs.core.str(tuna.main.secs__GT_mins.call(null, current)), cljs.core.str(" / "), cljs.core.str(tuna.main.secs__GT_mins.call(null, duration))].join("")));
+  enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray([".bar"], true), enfocus.core.en_set_attr.call(null, "\ufdd0'style", [cljs.core.str("width:"), cljs.core.str(current / duration * 100), cljs.core.str("%;")].join("")));
+  if(cljs.core._EQ_.call(null, current, duration)) {
+    enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray([".bar"], true), enfocus.core.chainable_standard.call(null, function(pnod__3153__auto__) {
+      return enfocus.core.setTimeout.call(null, function() {
+        return enfocus.core.at.call(null, pnod__3153__auto__, enfocus.core.en_set_attr.call(null, "\ufdd0'style", "width: 0%;"))
+      }, 500)
+    }));
+    tuna.controls.show_play_icon.call(null);
+    tuna.main.show_song_title.call(null, "&nbsp;");
+    return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#current"], true), enfocus.core.en_content.call(null, "00:00 / 00:00"))
+  }else {
+    return null
+  }
 };
 tuna.main.play_audio = function play_audio(id) {
   tuna.main.set_audio_src.call(null, id);
@@ -36575,12 +36576,24 @@ tuna.main.play_audio = function play_audio(id) {
   document.getElementById("player").play();
   return tuna.controls.show_pause_icon.call(null)
 };
+tuna.main.toggle_play_pause = function toggle_play_pause() {
+  if(cljs.core._EQ_.call(null, enfocus.core.from.call(null, enfocus.core.css_select.call(null, cljs.core.PersistentVector.fromArray(["#play-pause"], true)), enfocus.core.en_get_attr.call(null, "\ufdd0'class")), "icon-play")) {
+    document.getElementById("player").play();
+    return tuna.controls.show_pause_icon.call(null)
+  }else {
+    document.getElementById("player").pause();
+    return tuna.controls.show_play_icon.call(null)
+  }
+};
 tuna.main.setup_listeners = function setup_listeners() {
-  return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#play-pause"], true), enfocus.core.en_listen.call(null, "\ufdd0'click", tuna.controls.toggle_play_pause), cljs.core.PersistentVector.fromArray([".search-query"], true), enfocus.core.en_listen.call(null, "\ufdd0'keyup", function() {
+  return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#play-pause"], true), enfocus.core.en_listen.call(null, "\ufdd0'click", tuna.main.toggle_play_pause), cljs.core.PersistentVector.fromArray([".search-query"], true), enfocus.core.en_listen.call(null, "\ufdd0'keyup", function() {
     return tuna.main.search.call(null, document.getElementById("query").value)
   }))
 };
+tuna.main.focus_search = function focus_search() {
+  return enfocus.core.at.call(null, document, cljs.core.PersistentVector.fromArray(["#query"], true), enfocus.core.en_focus.call(null))
+};
 tuna.main.start = function start() {
-  return enfocus.core.at.call(null, document, tuna.main.setup_listeners.call(null), tuna.main.add_song_list.call(null))
+  return enfocus.core.at.call(null, document, tuna.main.setup_listeners.call(null), tuna.main.add_song_list.call(null), Mousetrap.bind("/", tuna.main.focus_search, "keyup"), Mousetrap.bind("p", tuna.main.toggle_play_pause, "keydown"))
 };
 window.onload = tuna.main.start;

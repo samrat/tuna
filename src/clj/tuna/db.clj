@@ -53,4 +53,4 @@
 (defn search-song [query]
   (if-not (= query "")
     (clucy/search clucy-index (str query "~") 30)
-    (all-songs)))
+    (sort-by :artist (all-songs))))
