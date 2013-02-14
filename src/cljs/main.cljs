@@ -1,5 +1,5 @@
 (ns tuna.main
-  (:use [tuna.controls :only (show-pause-icon show-play-icon toggle-play-pause)])
+  (:use [tuna.controls :only (show-pause-icon show-play-icon)])
   (:require [dommy.template :as template]
             [enfocus.core :as ef]
             [shoreleave.remotes.http-rpc :as rpc])
@@ -16,13 +16,13 @@
 
 (defn render-song-list [songs]
   (template/node [:div {:id "song-list"}
-                  [:table {:class "table table-hover table-condensed"}
+                  [:table {:class "table table-hover"}
                    [:thead
                     [:th "Title"]
                     [:th "Album"]
                     [:th "Artist"]]
                    [:tbody {:class "selectable"}
-                    (for [song (sort-by :artist songs)]
+                    (for [song songs]
                       [:tr {:onclick
                             (str "javascript:tuna.main.play_audio('"
                                  (:id song) "');")}
@@ -37,7 +37,7 @@
      (em/at js/document ["#song-list"] (em/substitute (render-song-list songs))))))
 
 (defn add-song-list []
-  (song-list-hof (fn [songs] (add-to-body (render-song-list songs)))))
+  (song-list-hof (fn [songs] (add-to-body (render-song-list (sort-by :artist songs))))))
 
 (em/defaction show-song-title [title]
   [".title"] (em/content title))
@@ -51,12 +51,8 @@
            (str "0" seconds)
            seconds))))
 
-(em/defaction show-song-length [length]
-  [".length"] (em/content (secs->mins length)))
-
 (em/defaction render-song-info [info]
-  (em/do-> (show-song-title (:title info))
-           (show-song-length (:length info))))
+  (show-song-title (:title info)))
 
 (defn show-song-info [id]
   (rpc/remote-callback :song-info [id] #(render-song-info %)))
@@ -66,19 +62,32 @@
   (em/do-> (em/set-attr :src (str "/song/" id))
            (em/set-attr :songid id)))
 
-(em/defaction show-current-time [current duration]
-  ["#current"] (em/content (str (secs->mins current)
-                                " / "
-                                (secs->mins duration)))
-  [".bar"] (em/set-attr :style (str "width:"
-                                    (* (/ current duration) 100)
-                                    "%;")))
+(defn show-current-time [current duration]
+  (do
+    (em/at js/document ["#current"] (em/content (str (secs->mins current)
+                                                     " / "
+                                                     (secs->mins duration))))
+    (em/at js/document [".bar"] (em/set-attr :style (str "width:"
+                                                         (* (/ current duration) 100)
+                                                         "%;")))
+    (if (= current duration) ; song is complete
+      (do (em/at js/document [".bar"] (em/delay 500 (em/set-attr :style "width: 0%;")))
+          (show-play-icon)
+          (show-song-title "&nbsp;")
+          (em/at js/document ["#current"] (em/content "00:00 / 00:00"))))))
 
 (defn play-audio [id]
   (do (set-audio-src id)
       (show-song-info id)
       (.play (.getElementById js/document "player"))
       (show-pause-icon)))
+
+(defn toggle-play-pause []
+  (if (= (em/from (em/select ["#play-pause"]) (em/get-attr :class)) "icon-play")
+    (do (.play (.getElementById js/document "player"))
+        (show-pause-icon))
+    (do (.pause (.getElementById js/document "player"))
+        (show-play-icon))))
 
 (em/defaction setup-listeners []
   ["#play-pause"] (em/listen
