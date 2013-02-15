@@ -25,7 +25,14 @@
                     (for [song songs]
                       [:tr {:onclick
                             (str "javascript:tuna.main.play_audio('"
-                                 (:id song) "');")}
+                                 (:id song) "');")
+                            :id (:id song)
+                            :next (try
+                                    (:id (nth songs (inc (:serial song))))
+                                    (catch js/Object e ""))
+                            :prev (try
+                                    (:id (nth songs (dec (:serial song))))
+                                    (catch js/Object e ""))}
                        [:td (:title song)]
                        [:td (:album song)]
                        [:td (:artist song)]])]]]))
@@ -37,7 +44,7 @@
      (em/at js/document ["#song-list"] (em/substitute (render-song-list songs))))))
 
 (defn add-song-list []
-  (song-list-hof (fn [songs] (add-to-body (render-song-list (sort-by :artist songs))))))
+  (song-list-hof (fn [songs] (add-to-body (render-song-list songs)))))
 
 (em/defaction show-song-title [title]
   [".title"] (em/content title))
@@ -76,11 +83,30 @@
           (show-song-title "&nbsp;")
           (em/at js/document ["#current"] (em/content "00:00 / 00:00"))))))
 
+(defn set-next-song [id]
+  (let [next-song (em/from (em/select [(str "#" id)])
+                          (em/get-attr :next))]
+        (em/at js/document ["#next-song"]
+               (em/set-attr :onclick
+                            (str "javascript:tuna.main.play_audio('"
+                                 next-song
+                                 "');")))))
+
+(defn set-prev-song [id]
+  (let [prev-song (em/from (em/select [(str "#" id)])
+                          (em/get-attr :prev))]
+        (em/at js/document ["#prev-song"]
+               (em/set-attr :onclick
+                            (str "javascript:tuna.main.play_audio('"
+                                 prev-song
+                                 "');")))))
 (defn play-audio [id]
   (do (set-audio-src id)
       (show-song-info id)
       (.play (.getElementById js/document "player"))
-      (show-pause-icon)))
+      (show-pause-icon)
+      (set-next-song id)
+      (set-prev-song id)))
 
 (defn toggle-play-pause []
   (if (= (em/from (em/select ["#play-pause"]) (em/get-attr :class)) "icon-play")
@@ -105,6 +131,8 @@
   (setup-listeners)
   (add-song-list)
   (.bind js/Mousetrap "/" focus-search "keyup")
-  (.bind js/Mousetrap "p" toggle-play-pause "keydown"))
+  (.bind js/Mousetrap "space" toggle-play-pause "keydown")
+  (.bind js/Mousetrap "p" #(.click (.getElementById js/document "prev-song")) "keydown")
+  (.bind js/Mousetrap "n" #(.click (.getElementById js/document "next-song")) "keydown"))
 
 (set! (.-onload js/window) start)

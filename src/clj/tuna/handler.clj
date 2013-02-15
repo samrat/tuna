@@ -12,10 +12,16 @@
   (song-by-id id))
 
 (rpc/defremote songs []
-  (all-songs))
+  (let [songs (sort-by :artist (all-songs))]
+    (map (fn [song]
+               (assoc song :serial (.indexOf songs song)))
+             songs)))
 
 (rpc/defremote search [query]
-  (search-song query))
+  (let [songs (search-song query)]
+    (map (fn [song]
+               (assoc song :serial (.indexOf songs song)))
+             songs)))
 
 (defroutes app-routes
   (GET "/" [] (song-list))
@@ -26,10 +32,6 @@
                                     "/scan"}}))
   (GET "/scan" [] (add-songs "/vault/Music"))
   (GET "/search/:q" [q] (search-song q))
-  (GET "/last-login" [] {:status 302
-                         :headers {"Location" "http://www.last.fm/api/auth/?api_key=c74adbe5d929bc487cf2f6928a3d494e&cb=http://localhost:3000/last-auth"}})
-  (GET "/last-auth" [token] token)
-  ;(GET "/play/:id" [id] (play id))
   (route/resources "/")
   (route/not-found "Not Found"))
 
