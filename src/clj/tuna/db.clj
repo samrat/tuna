@@ -26,9 +26,9 @@
 
 (defn all-songs []
   (sql/with-connection songs-db
-        (sql/with-query-results result
-          ["SELECT * from songs"]
-          (vec result))))
+    (sql/with-query-results result
+      ["SELECT title,artist,album,id,length from songs"]
+      (vec result))))
 
 (defn song-by-id [id]
   (first (sql/with-connection songs-db
@@ -52,5 +52,5 @@
 
 (defn search-song [query]
   (if-not (= query "")
-    (clucy/search clucy-index (str query "~") 30)
+    (map #(dissoc % :path :mimetype) (clucy/search clucy-index (str query "~") 30))
     (sort-by :artist (all-songs))))
