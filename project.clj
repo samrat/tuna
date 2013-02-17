@@ -29,7 +29,7 @@
                         :source-paths ["src/cljs"]
                         :compiler {:externs ["mousetrap.min.js"]
                                    :output-to "resources/public/js/main.js"
-                                   :optimizations :whitespace
+                                   :optimizations :simple
                                    :pretty-print true}}]}
   :profiles
   {:dev {:dependencies [[ring-mock "0.1.3"]

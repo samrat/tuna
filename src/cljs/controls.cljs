@@ -7,3 +7,9 @@
 
 (em/defaction show-play-icon []
   ["#play-pause"] (em/set-attr :class "icon-play"))
+
+(em/defaction show-song-title [title]
+  [".title"] (em/content title))
+
+(em/defaction show-song-artist [artist]
+  [".artist"] (em/content artist))

@@ -1,5 +1,8 @@
 (ns tuna.main
-  (:use [tuna.controls :only (show-pause-icon show-play-icon)])
+  (:use [tuna.controls :only (show-pause-icon
+                              show-play-icon
+                              show-song-title
+                              show-song-artist)])
   (:require [dommy.template :as template]
             [enfocus.core :as ef]
             [shoreleave.remotes.http-rpc :as rpc])
@@ -7,7 +10,7 @@
                    [shoreleave.remotes.macros :as rpcm]))
 
 (em/defaction add-to-body [stuff]
-  ["body"] (em/append stuff))
+  ["#song-list"] (em/content stuff))
 
 (defn song-list-hof [f]
   (rpc/remote-callback
@@ -15,8 +18,7 @@
    #(f %)))
 
 (defn render-song-list [songs]
-  (template/node [:div {:id "song-list"}
-                  [:table {:class "table table-hover"}
+  (template/node [:table {:class "table table-hover"}
                    [:thead
                     [:th "Title"]
                     [:th "Album"]
@@ -35,19 +37,16 @@
                                     (catch js/Object e ""))}
                        [:td (:title song)]
                        [:td (:album song)]
-                       [:td (:artist song)]])]]]))
+                       [:td (:artist song)]])]]))
 
 (defn search [query]
   (rpc/remote-callback
    :search [query]
    (fn [songs]
-     (em/at js/document ["#song-list"] (em/substitute (render-song-list songs))))))
+     (em/at js/document ["#song-list"] (add-to-body (render-song-list songs))))))
 
 (defn add-song-list []
   (song-list-hof (fn [songs] (add-to-body (render-song-list songs)))))
-
-(em/defaction show-song-title [title]
-  [".title"] (em/content title))
 
 (defn secs->mins [secs]
   (let [minutes (Math/floor (/ secs 60))
@@ -58,8 +57,16 @@
            (str "0" seconds)
            seconds))))
 
+(em/defaction set-title [title]
+  ["title"] (em/content title))
+
 (em/defaction render-song-info [info]
-  (show-song-title (:title info)))
+  (do (show-song-title (:title info))
+      (show-song-artist (:artist info))
+      (set-title (str "▶ "
+                      (:artist info)
+                      " - "
+                      (:title info)))))
 
 (defn show-song-info [id]
   (rpc/remote-callback :song-info [id] #(render-song-info %)))
@@ -81,6 +88,8 @@
       (do (em/at js/document [".bar"] (em/delay 500 (em/set-attr :style "width: 0%;")))
           (show-play-icon)
           (show-song-title "&nbsp;")
+          (show-song-artist "&nbsp;")
+          (set-title "Tuna")
           (em/at js/document ["#current"] (em/content "00:00 / 00:00"))))))
 
 (defn set-next-song [id]
@@ -127,12 +136,28 @@
 (em/defaction focus-search []
   ["#query"] (em/focus))
 
+(defn bind-key [key f action]
+  (.bind js/Mousetrap key f (name action)))
+
+(defn seek [direction time]
+  (let [player (.getElementById js/document "player")
+        current (.-currentTime player)]
+    (set! (.-currentTime player)
+          (if (= direction :forward)
+            (+ current time)
+            (- current time)))))
+
+(defn keybindings []
+  (do (bind-key "/" focus-search :keyup)
+      (bind-key "shift+p" toggle-play-pause :keydown)
+      (bind-key "<" #(.click (.getElementById js/document "prev-song")) :keydown)
+      (bind-key ">" #(.click (.getElementById js/document "next-song")) :keydown)
+      (bind-key "f" #(seek :forward 5) :keydown)
+      (bind-key "b" #(seek :backward 5) :keydown)))
+
 (em/defaction start []
   (setup-listeners)
   (add-song-list)
-  (.bind js/Mousetrap "/" focus-search "keyup")
-  (.bind js/Mousetrap "space" toggle-play-pause "keydown")
-  (.bind js/Mousetrap "p" #(.click (.getElementById js/document "prev-song")) "keydown")
-  (.bind js/Mousetrap "n" #(.click (.getElementById js/document "next-song")) "keydown"))
+  (keybindings))
 
 (set! (.-onload js/window) start)
