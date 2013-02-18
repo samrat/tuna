@@ -27,10 +27,11 @@
   (GET "/" [] (song-list))
   (GET "/song/:id" [id] (song id))
   (GET "/init" [] (do (init-db)
-                         {:status 302
-                          :headers {"Location"
-                                    "/scan"}}))
-  (GET "/scan" [] (add-songs "/vault/Music"))
+                      {:status 302
+                       :headers {"Location" "/scan"}}))
+  (GET "/scan" [] (do (add-songs "/vault/Music")
+                      {:status 302
+                       :headers {"Location" "/"}}))
   (GET "/search/:q" [q] (search-song q))
   (route/resources "/")
   (route/not-found "Not Found"))
