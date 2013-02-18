@@ -29,7 +29,7 @@
   (GET "/init" [] (do (init-db)
                       {:status 302
                        :headers {"Location" "/scan"}}))
-  (GET "/scan" [] (do (add-songs "/vault/Music")
+  (GET "/scan" [] (do (doall (add-songs "/vault/Music"))
                       {:status 302
                        :headers {"Location" "/"}}))
   (GET "/search/:q" [q] (search-song q))
