@@ -43,7 +43,10 @@
              (vec result)))))
 
 (defn existing-paths []
-  (into #{} (map clojure.java.io/file (map :path (all-songs)))))
+  (map clojure.java.io/file (map :path (sql/with-connection songs-db
+                                         (sql/with-query-results result
+                                           ["SELECT path from songs"]
+                                           (set result))))))
 
 (defn add-to-db [song]
   (do (sql/with-connection songs-db

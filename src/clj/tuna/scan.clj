@@ -33,5 +33,4 @@
      :mimetype mime}))
 
 (defn add-songs [source]
-  (do ;(init-db)
-      (map add-to-db (map song-info (audio-files source)))))
+  (do (map add-to-db (map song-info (audio-files source)))))
