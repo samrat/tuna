@@ -6,7 +6,7 @@
                  [compojure "1.1.5"]
                  [hiccup "1.0.2"]
                  [prismatic/dommy "0.0.1"]
-                 [enfocus "1.0.0-beta3"]
+                 [enfocus "1.0.0"]
                  [com.cemerick/shoreleave-remote-ring "0.0.2"]
                  [shoreleave/shoreleave-remote "0.2.2"]
                  [org.clojure/java.jdbc "0.2.3"]
