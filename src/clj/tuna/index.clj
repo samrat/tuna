@@ -6,7 +6,7 @@
 (defn song-list []
   (html5 (html [:head
                 (include-css "/bootstrap/css/bootstrap.css")
-                (include-js "/js/main.js")
+                [:script {:src "/js/main.js" :async ""}]
                 (include-css "/css/font-awesome.min.css")
                 (include-js "/js/mousetrap.min.js")
                 [:title "Tuna"]
@@ -25,6 +25,11 @@
                          [:div {:class "bar"}]
                          [:div {:id "current" :style "text-align:right;"}
                           "00:00 / 00:00"]]]]]
+                (if (empty? (try (slurp "/home/samrat/.cache/tuna")
+                                 (catch Exception e nil)))
+                  [:div [:a {:href "/login" :target "blank"} "Login to Last.fm"]
+                   [:br]
+                   [:a {:href "/auth"} "Click here after authorizing tuna."]])
                 [:div {:class "container"} [:input {:type "text"
                                                     :style "height:30px;"
                                                     :id "query"

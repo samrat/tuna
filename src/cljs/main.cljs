@@ -90,6 +90,9 @@
           (show-song-title "&nbsp;")
           (show-song-artist "&nbsp;")
           (set-title "Tuna")
+          (rpc/remote-callback :scrobble [(em/from (em/select ["#player"])
+                                                   (em/get-attr :songid))]
+                               nil)
           (em/at js/document ["#current"] (em/content "00:00 / 00:00"))))))
 
 (defn set-next-song [id]

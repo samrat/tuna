@@ -1,18 +1,19 @@
 (defproject tuna "0.1.0-SNAPSHOT"
   :description "Serves your music directory so you can play it on your browser."
-  :url "https://bitbucket.org/samrat/tuna"
+  :url "http://github.com/samrat/tuna"
   :source-paths ["src/clj"]
-  :dependencies [[org.clojure/clojure "1.4.0"]
+  :dependencies [[org.clojure/clojure "1.5.0"]
                  [compojure "1.1.5"]
                  [hiccup "1.0.2"]
                  [prismatic/dommy "0.0.1"]
                  [enfocus "1.0.0"]
                  [com.cemerick/shoreleave-remote-ring "0.0.2"]
                  [shoreleave/shoreleave-remote "0.2.2"]
+                 [sandbar/sandbar "0.4.0-SNAPSHOT"]
                  [org.clojure/java.jdbc "0.2.3"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
+                 [me.raynes/least "0.1.4"]
                  [clj-tika "1.2.0"]
-                 [de.u-mass/lastfm-java "0.1.2"]
                  [org/jaudiotagger "2.0.3"]
                  [clucy "0.3.0"]
                  [digest "1.4.2"]
